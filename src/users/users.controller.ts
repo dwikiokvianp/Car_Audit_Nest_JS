@@ -12,38 +12,44 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
+import { AuthService } from './auth.service';
 import { UpdateUserDto } from './dtos/update-user-dto';
-import { getBodyParserOptions } from '@nestjs/platform-express/adapters/utils/get-body-parser-options.util';
-import { LoggingInterceptor } from '../interceptors/serialize.interceptor';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { UserDto } from './dtos/user-dto';
 
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Delete('/:id')
   removeUser(@Param('id') id: string) {
     return this.userService.remove(parseInt(id));
   }
 
-  @UseInterceptors(LoggingInterceptor)
   @Get('/')
-  async getAllUser(@Query() query: { email: string; password: string }) {
-    const { email, password } = query;
-    return await this.userService.find(email, password);
+  async getAllUser(@Query() query: { email: string }) {
+    const { email } = query;
+    return await this.userService.find(email);
   }
 
   @Get('/:id')
   async getUserById(@Param('id') id: string) {
     const mantap = await this.userService.findOne(parseInt(id));
-    console.log('kena');
     return mantap;
   }
 
   @Post('/signup')
-  createUser(@Body() body: CreateUserDto) {
-    this.userService
-      .create(body.email, body.password)
-      .then(() => console.log('berhasil'));
+  async createUser(@Body() body: CreateUserDto) {
+    return await this.authService.signUp(body.email, body.password);
+  }
+
+  @Post('/signin')
+  async signUser(@Body() body: CreateUserDto) {
+    return await this.authService.signIn(body.email, body.password);
   }
 
   @Patch('/:id')

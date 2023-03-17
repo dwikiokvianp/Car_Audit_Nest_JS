@@ -3,19 +3,29 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
+  UseInterceptors,
 } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
-import { User } from '../users/user.entity';
+import { plainToClass } from 'class-transformer';
+
+interface ClassConstructor {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  new (...args: any[]): {};
+}
+
+export function Serialize(dto: ClassConstructor) {
+  return UseInterceptors(new LoggingInterceptor(dto));
+}
 
 @Injectable()
-export class LoggingInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    console.log('Before...');
+class LoggingInterceptor implements NestInterceptor {
+  constructor(private dto: ClassConstructor) {}
 
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map((data: User[]) => {
-        return data.map((hello) => {
-          return { id: hello.id, email: hello.email };
+      map((data: any) => {
+        return plainToClass(this.dto, data, {
+          excludeExtraneousValues: true,
         });
       }),
     );

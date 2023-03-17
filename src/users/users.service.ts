@@ -12,13 +12,10 @@ export class UsersService {
     return this.repo.save(user);
   }
 
-  async find(email: string, password: string) {
+  async find(email: string) {
     const user = await this.repo.find({
-      where: { email, password },
+      where: { email },
     });
-    if (user.length === 0) {
-      throw new NotFoundException('User not found');
-    }
     return user;
   }
 
