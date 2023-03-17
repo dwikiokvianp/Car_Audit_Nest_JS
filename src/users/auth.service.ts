@@ -3,16 +3,6 @@ import { UsersService } from './users.service';
 import { HashUtils } from '../utils/hash.utils';
 import { User } from './user.entity';
 
-import { randomBytes, scrypt as _scrypt } from 'node:crypto';
-import { promisify } from 'util';
-
-const scrypt = promisify(_scrypt);
-
-interface hashProps {
-  hash: string;
-  salt: string;
-}
-
 @Injectable()
 export class AuthService {
   constructor(

@@ -1,10 +1,15 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import {
+  BadRequestException,
+  createParamDecorator,
+  ExecutionContext,
+} from '@nestjs/common';
 
 export const CurrentUser = createParamDecorator(
   (data: never, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();
-    console.log(request.session.userId);
-    // console.log(request);
-    return 'hi there';
+    if (!request.currentUser) {
+      throw new BadRequestException('There are no active user');
+    }
+    return request.currentUser;
   },
 );

@@ -14,12 +14,10 @@ export class AppController {
   @Get('/sandbox')
   findAll(@Session() session: Record<string, any>) {
     session.visits = session.visits ? session.visits + 1 : 1;
-    console.log(session);
   }
 
   @Get('/sandboxi')
   findSession(@Session() session) {
     const { visits } = session;
-    console.log(visits);
   }
 }
