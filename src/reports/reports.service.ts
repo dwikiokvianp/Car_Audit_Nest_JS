@@ -22,7 +22,6 @@ export class ReportsService {
   }
 
   async changeApproval(id: number, approved: boolean) {
-    console.log(id, typeof id, approved, typeof approved);
     const report = await this.repo.findOneBy({ id });
     if (!report) {
       throw new NotFoundException('report not found');
