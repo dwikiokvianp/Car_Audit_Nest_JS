@@ -42,20 +42,4 @@ export class AppController {
     writeStream.end();
     return { message: `File ${originalname} saved` };
   }
-
-  @Get(':filename')
-  getFile(@Param('filename') filename: string) {
-    const directoryPath = './uploads';
-    const files = readdirSync(directoryPath);
-    const matchingFile = files.find((file) => file === filename);
-    if (matchingFile && existsSync(join(directoryPath, matchingFile))) {
-      return {
-        path: join(directoryPath, matchingFile),
-        file: matchingFile,
-      };
-    }
-    return {
-      message: 'File not found',
-    };
-  }
 }
