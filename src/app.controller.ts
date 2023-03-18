@@ -1,6 +1,18 @@
-import { Controller, Get, Req, Session } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  Session,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AppService } from './app.service';
-import { Request } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { createWriteStream } from 'fs';
+import { existsSync, readdirSync } from 'fs';
+import { join } from 'path';
 
 @Controller()
 export class AppController {
@@ -19,5 +31,31 @@ export class AppController {
   @Get('/sandboxi')
   findSession(@Session() session) {
     const { visits } = session;
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    const { originalname, buffer } = file;
+    const writeStream = createWriteStream(`./uploads/${originalname}`);
+    writeStream.write(buffer);
+    writeStream.end();
+    return { message: `File ${originalname} saved` };
+  }
+
+  @Get(':filename')
+  getFile(@Param('filename') filename: string) {
+    const directoryPath = './uploads';
+    const files = readdirSync(directoryPath);
+    const matchingFile = files.find((file) => file === filename);
+    if (matchingFile && existsSync(join(directoryPath, matchingFile))) {
+      return {
+        path: join(directoryPath, matchingFile),
+        file: matchingFile,
+      };
+    }
+    return {
+      message: 'File not found',
+    };
   }
 }

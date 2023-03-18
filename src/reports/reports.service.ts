@@ -9,7 +9,13 @@ export class ReportsService {
   constructor(@InjectRepository(Report) private repo: Repository<Report>) {}
 
   async create(reportDto: CreateReportDto) {
+    console.log('kena', reportDto);
     const report = await this.repo.create(reportDto);
     return this.repo.save(report);
+  }
+
+  async find(): Promise<Report[]> {
+    const data = await this.repo.find();
+    return data;
   }
 }

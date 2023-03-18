@@ -67,6 +67,11 @@ export class UsersController {
     return user;
   }
 
+  @Post('/signout')
+  async signOutUser(@Session() session: any) {
+    session.userId = null;
+  }
+
   @Patch('/:id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     return this.userService.update(parseInt(id), body);
