@@ -11,9 +11,9 @@ import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreateReportDto {
   @Transform(({ value }: TransformFnParams) => parseInt(value))
-  @IsNumber()
   @Min(0)
   @Max(1000000)
+  @IsNumber()
   price: number;
 
   @IsString()
