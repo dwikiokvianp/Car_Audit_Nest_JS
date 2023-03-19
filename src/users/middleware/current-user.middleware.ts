@@ -10,6 +10,7 @@ export class CurrentUserMiddleware implements NestMiddleware {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const { userId } = req.session || {};
+    console.log('masuk');
 
     if (userId) {
       const user = await this.userService.findOne(userId);

@@ -28,12 +28,12 @@ export class CreateReportDto {
   @Max(new Date().getFullYear())
   year: number;
 
-  @Transform(({ value }: TransformFnParams) => parseInt(value))
+  @Transform(({ value }: TransformFnParams) => parseFloat(value))
   @IsNumber()
   @IsLongitude()
   lng: number;
 
-  @Transform(({ value }: TransformFnParams) => parseInt(value))
+  @Transform(({ value }: TransformFnParams) => parseFloat(value))
   @IsNumber()
   @IsLatitude()
   lat: number;

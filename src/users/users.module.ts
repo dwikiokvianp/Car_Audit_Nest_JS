@@ -25,6 +25,6 @@ import { CurrentUserMiddleware } from './middleware/current-user.middleware';
 })
 export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(CurrentUserMiddleware).forRoutes('*');
+    consumer.apply(CurrentUserMiddleware).forRoutes('reports');
   }
 }

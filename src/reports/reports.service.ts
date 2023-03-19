@@ -4,7 +4,6 @@ import { Report } from './report.entity';
 import { Repository } from 'typeorm';
 import { CreateReportDto } from './dtos/create-report-dto';
 import { User } from '../users/user.entity';
-import { ReportDto } from './dtos/report-dto';
 
 @Injectable()
 export class ReportsService {
@@ -17,7 +16,11 @@ export class ReportsService {
   }
 
   async find(): Promise<Report[]> {
-    const data = await this.repo.find();
+    const data = await this.repo.find({
+      relations: {
+        user: true,
+      },
+    });
     return data;
   }
 
