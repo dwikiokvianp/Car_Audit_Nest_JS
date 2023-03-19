@@ -13,12 +13,6 @@ import * as process from 'process';
 
 @Module({
   imports: [
-    // TypeOrmModule.forRoot({
-    //   type: 'sqlite',
-    //   database: 'db.sqlite',
-    //   entities: [User, Report],
-    //   synchronize: true,
-    // }),
     ConfigModule.forRoot({
       envFilePath: `.env.${process.env.NODE_ENV}`,
       isGlobal: true,
@@ -30,7 +24,9 @@ import * as process from 'process';
           type: 'sqlite',
           database: config.get('DB_NAME'),
           entities: [User, Report],
-          synchronize: true,
+          synchronize: Boolean(
+            `${process.env.NODE_ENV === 'development' ? true : false}`,
+          ),
         };
       },
     }),
